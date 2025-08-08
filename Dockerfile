@@ -1,15 +1,15 @@
-FROM maven:3-openjdk-17 AS build
+# Build stage - dùng Maven với JDK 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
 COPY . .
 RUN mvn clean package -DskipTests
 
-#Run stage
+# Run stage - chỉ cần JDK 21
 FROM openjdk:21-jdk-slim
 WORKDIR /app
 
 COPY --from=build /app/target/BusBooking-0.0.1-SNAPSHOT.war BusBooking.war
 EXPOSE 8080
 
-
-ENTRYPOINT ["java","-jar","BusBooking.war"]
+ENTRYPOINT ["java", "-jar", "BusBooking.war"]

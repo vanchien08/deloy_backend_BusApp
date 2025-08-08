@@ -25,4 +25,3 @@ public class MonthlyRevenueResponse {
         this.totalRevenue = totalRevenue;
     }
 }
-

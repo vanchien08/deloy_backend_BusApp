@@ -1,17 +1,18 @@
 package com.thuctap.busbooking.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.thuctap.busbooking.dto.request.RoleRequest;
 import com.thuctap.busbooking.dto.response.ApiResponse;
 import com.thuctap.busbooking.entity.Role;
-import com.thuctap.busbooking.service.auth.RoleService;
 import com.thuctap.busbooking.service.impl.RoleServiceImpl;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class RoleController {
     RoleServiceImpl roleService;
 
     @PostMapping
-    ApiResponse<Role> createRole(@RequestBody RoleRequest request){
+    ApiResponse<Role> createRole(@RequestBody RoleRequest request) {
         return ApiResponse.<Role>builder()
                 .code(200)
                 .message("Role create successful!")
@@ -32,7 +33,7 @@ public class RoleController {
     }
 
     @GetMapping
-    ApiResponse<List<Role>> getRoles(){
+    ApiResponse<List<Role>> getRoles() {
         return ApiResponse.<List<Role>>builder()
                 .code(200)
                 .result(roleService.getRoles())

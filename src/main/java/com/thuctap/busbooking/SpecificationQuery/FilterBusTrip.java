@@ -1,21 +1,29 @@
 package com.thuctap.busbooking.SpecificationQuery;
 
-import com.thuctap.busbooking.entity.Bus;
-import com.thuctap.busbooking.entity.BusRoute;
-import com.thuctap.busbooking.entity.BusTrip;
-import com.thuctap.busbooking.entity.User;
-import org.springframework.data.jpa.domain.Specification;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.thuctap.busbooking.entity.Bus;
+import com.thuctap.busbooking.entity.BusRoute;
+import com.thuctap.busbooking.entity.BusTrip;
+import com.thuctap.busbooking.entity.User;
+
 public class FilterBusTrip {
 
-    public static Specification<BusTrip> filterBusTrip(Integer id, Integer busRouteId, LocalDateTime departureTime, Integer busId, Integer driverId, Integer status) {
+    public static Specification<BusTrip> filterBusTrip(
+            Integer id,
+            Integer busRouteId,
+            LocalDateTime departureTime,
+            Integer busId,
+            Integer driverId,
+            Integer status) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 

@@ -1,5 +1,15 @@
 package com.thuctap.busbooking.service.impl;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import com.thuctap.busbooking.SpecificationQuery.FilterUser;
 import com.thuctap.busbooking.dto.request.*;
 import com.thuctap.busbooking.entity.Account;
@@ -10,21 +20,12 @@ import com.thuctap.busbooking.mapper.UserMapper;
 import com.thuctap.busbooking.repository.AccountRepository;
 import com.thuctap.busbooking.repository.UserRepository;
 import com.thuctap.busbooking.service.auth.AccountService;
-import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.thuctap.busbooking.service.auth.UserService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(int id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
     }
 
     @Override
@@ -56,8 +56,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(int id, UserRequest request) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        User existingUser =
+                userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
 
         if (request.getName() != null) {
             existingUser.setName(request.getName());
@@ -78,8 +78,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(int id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
 
         Account account = user.getAccount();
         if (account == null) {
@@ -93,8 +92,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void restoreUser(int id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
 
         Account account = user.getAccount();
         if (account == null) {
@@ -111,10 +109,8 @@ public class UserServiceImpl implements UserService {
         AccountCreationRequest request1 = new AccountCreationRequest(request.getEmail(), request.getPassword());
         Account account = accountService.createAccountUser(request1);
 
-        if(userRepository.existsByCccd(request.getCccd()))
-            throw new AppException(ErrorCode.CCCD_EXIST);
-        if(userRepository.existsByPhone(request.getPhone()))
-            throw new AppException(ErrorCode.PHONE_EXIST);
+        if (userRepository.existsByCccd(request.getCccd())) throw new AppException(ErrorCode.CCCD_EXIST);
+        if (userRepository.existsByPhone(request.getPhone())) throw new AppException(ErrorCode.PHONE_EXIST);
         User user = userMapper.toUserCreation(request);
         user.setAccount(account);
         user.setAvatar("https://res.cloudinary.com/dxxswaeor/image/upload/v1753078869/file_afjup6.jpg");
@@ -127,7 +123,7 @@ public class UserServiceImpl implements UserService {
         AccountCreationRequest request1 = new AccountCreationRequest(request.getEmail(), request.getPassword());
         Account account = accountService.createAccountDriver(request1);
         String imgurl = "https://res.cloudinary.com/dxxswaeor/image/upload/v1753078869/file_afjup6.jpg";
-        if(request.getFile() != null && !request.getFile().isEmpty()){
+        if (request.getFile() != null && !request.getFile().isEmpty()) {
             try {
                 log.info(String.valueOf(request.getFile()));
                 imgurl = cloudinaryService.uploadFile(request.getFile());
@@ -135,10 +131,8 @@ public class UserServiceImpl implements UserService {
                 throw new AppException(ErrorCode.PHOTO_UPLOAD_FAILED);
             }
         }
-        if(userRepository.existsByCccd(request.getCccd()))
-            throw new AppException(ErrorCode.CCCD_EXIST);
-        if(userRepository.existsByPhone(request.getPhone()))
-            throw new AppException(ErrorCode.PHONE_EXIST);
+        if (userRepository.existsByCccd(request.getCccd())) throw new AppException(ErrorCode.CCCD_EXIST);
+        if (userRepository.existsByPhone(request.getPhone())) throw new AppException(ErrorCode.PHONE_EXIST);
         log.info(imgurl);
         User user = userMapper.toDriverCreation(request);
         user.setAccount(account);
@@ -146,19 +140,23 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public User getMyInfo(){
+    public User getMyInfo() {
         var context = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountRepository.findByEmail(String.valueOf(context)).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+        Account account = accountRepository
+                .findByEmail(String.valueOf(context))
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         User user = userRepository.findByAccount(account);
         return user;
     }
 
-    public User updateUserInfo(UserUpdateInfoRequest request){
+    public User updateUserInfo(UserUpdateInfoRequest request) {
         var context = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountRepository.findByEmail(String.valueOf(context)).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+        Account account = accountRepository
+                .findByEmail(String.valueOf(context))
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         User user = userRepository.findByAccount(account);
 
-        if(request.getFile() != null && !request.getFile().isEmpty()){
+        if (request.getFile() != null && !request.getFile().isEmpty()) {
             try {
                 log.info(String.valueOf(request.getFile()));
                 String imgurl = cloudinaryService.uploadFile(request.getFile());
@@ -176,9 +174,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public List<User> filterUsers(String name, Integer gender, LocalDateTime birthday, String phone, String email, Integer status, Integer roleId) {
+    public List<User> filterUsers(
+            String name,
+            Integer gender,
+            LocalDateTime birthday,
+            String phone,
+            String email,
+            Integer status,
+            Integer roleId) {
         Specification<User> spec = FilterUser.filterUsers(name, gender, birthday, phone, email, status, roleId);
         return userRepository.findAll(spec);
     }
-
 }

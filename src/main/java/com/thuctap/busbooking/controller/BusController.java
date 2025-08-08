@@ -1,21 +1,20 @@
 package com.thuctap.busbooking.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.thuctap.busbooking.dto.request.BusFilterRequest;
 import com.thuctap.busbooking.dto.request.BusRequest;
 import com.thuctap.busbooking.dto.response.ApiResponse;
 import com.thuctap.busbooking.entity.Bus;
-import com.thuctap.busbooking.entity.BusStation;
 import com.thuctap.busbooking.entity.BusType;
 import com.thuctap.busbooking.service.auth.BusService;
-import com.thuctap.busbooking.service.auth.BusTypeService;
-import org.springframework.web.bind.annotation.*;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +23,6 @@ import java.util.List;
 public class BusController {
 
     BusService busService;
-
 
     @GetMapping("/get-all-bus")
     public ApiResponse<List<Bus>> getAllBus() {

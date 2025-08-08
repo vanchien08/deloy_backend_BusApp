@@ -1,16 +1,21 @@
 package com.thuctap.busbooking.SpecificationQuery;
-import com.thuctap.busbooking.entity.BusStation;
-import com.thuctap.busbooking.entity.Province;
-import org.springframework.data.jpa.domain.Specification;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.thuctap.busbooking.entity.BusStation;
+import com.thuctap.busbooking.entity.Province;
+
 public class FilterBusStation {
 
-    public static Specification<BusStation> filterBusStation(Integer id, String name, String address, String phone, Integer provinceId, Integer status) {
+    public static Specification<BusStation> filterBusStation(
+            Integer id, String name, String address, String phone, Integer provinceId, Integer status) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -23,24 +28,19 @@ public class FilterBusStation {
             if (name != null && !name.trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("name")),
-                        "%" + name.trim().toLowerCase() + "%"
-                ));
+                        "%" + name.trim().toLowerCase() + "%"));
             }
 
             // Lọc theo địa chỉ (khớp một phần, không phân biệt hoa thường)
             if (address != null && !address.trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("address")),
-                        "%" + address.trim().toLowerCase() + "%"
-                ));
+                        "%" + address.trim().toLowerCase() + "%"));
             }
 
             // Lọc theo số điện thoại (khớp một phần)
             if (phone != null && !phone.trim().isEmpty()) {
-                predicates.add(criteriaBuilder.like(
-                        root.get("phone"),
-                        "%" + phone.trim() + "%"
-                ));
+                predicates.add(criteriaBuilder.like(root.get("phone"), "%" + phone.trim() + "%"));
             }
 
             // Lọc theo tỉnh/thành phố

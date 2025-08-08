@@ -1,12 +1,11 @@
 package com.thuctap.busbooking.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.thuctap.busbooking.entity.SeatPosition;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface SeatPositionRepository extends JpaRepository<SeatPosition, Integer> {
@@ -15,6 +14,8 @@ public interface SeatPositionRepository extends JpaRepository<SeatPosition, Inte
     SeatPosition findById(int seatPositionId);
 
     void deleteByBusId(int id);
+
     List<SeatPosition> findByBusIdAndStatusTrue(Integer busId);
+
     SeatPosition findByNameAndBusId(String name, int busId);
 }

@@ -1,11 +1,11 @@
 package com.thuctap.busbooking.dto.response;
 
+import java.time.LocalDateTime;
+
 import com.thuctap.busbooking.entity.BusType;
-import com.thuctap.busbooking.entity.Role;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Data
 @Builder

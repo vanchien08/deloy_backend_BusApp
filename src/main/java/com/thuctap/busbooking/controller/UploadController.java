@@ -1,17 +1,18 @@
 package com.thuctap.busbooking.controller;
 
-import com.thuctap.busbooking.dto.response.ApiResponse;
-import com.thuctap.busbooking.exception.ErrorCode;
-import com.thuctap.busbooking.service.impl.CloudinaryService;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.thuctap.busbooking.dto.response.ApiResponse;
+import com.thuctap.busbooking.exception.ErrorCode;
+import com.thuctap.busbooking.service.impl.CloudinaryService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UploadController {
     CloudinaryService cloudinaryService;
+
     @PostMapping("/upload")
     public ApiResponse<?> upload(@RequestParam("file") MultipartFile file) {
         try {

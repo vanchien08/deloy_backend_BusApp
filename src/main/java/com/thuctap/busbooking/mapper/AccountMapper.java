@@ -1,8 +1,9 @@
 package com.thuctap.busbooking.mapper;
 
+import org.mapstruct.Mapper;
+
 import com.thuctap.busbooking.dto.request.AccountCreationRequest;
 import com.thuctap.busbooking.entity.Account;
-import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {

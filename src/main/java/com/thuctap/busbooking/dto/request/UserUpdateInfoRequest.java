@@ -1,13 +1,12 @@
 package com.thuctap.busbooking.dto.request;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import java.time.LocalDate;
+
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 @Data
 @Builder
 @AllArgsConstructor

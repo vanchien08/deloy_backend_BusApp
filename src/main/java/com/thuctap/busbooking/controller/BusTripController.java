@@ -1,30 +1,28 @@
 package com.thuctap.busbooking.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
+
 import com.thuctap.busbooking.dto.request.BusTripFilterRequest;
 import com.thuctap.busbooking.dto.request.BusTripRequest;
 import com.thuctap.busbooking.dto.response.ApiResponse;
 import com.thuctap.busbooking.dto.response.BusTripSearchResponse;
 import com.thuctap.busbooking.dto.response.PassengerTripInfoResponse;
-import com.thuctap.busbooking.entity.Bus;
 import com.thuctap.busbooking.entity.BusRoute;
 import com.thuctap.busbooking.entity.BusTrip;
 import com.thuctap.busbooking.entity.User;
 import com.thuctap.busbooking.repository.BusTripRepository;
 import com.thuctap.busbooking.service.auth.BusTripService;
-import com.thuctap.busbooking.service.impl.BusRouteServiceImpl;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -96,11 +94,11 @@ public class BusTripController {
             @RequestParam("fromProvinceId") int fromProvinceId,
             @RequestParam("toProvinceId") int toProvinceId,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam("ticketCount") int count
-    ) {
-        LocalDateTime currentTimePlusTwoHours = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).plusHours(2);
+            @RequestParam("ticketCount") int count) {
+        LocalDateTime currentTimePlusTwoHours =
+                LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).plusHours(2);
         return ApiResponse.<List<BusTripSearchResponse>>builder()
-                .result(busTripService.getBusTrip(fromProvinceId,toProvinceId,date,count))
+                .result(busTripService.getBusTrip(fromProvinceId, toProvinceId, date, count))
                 .build();
     }
 

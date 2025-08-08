@@ -16,5 +16,4 @@ public class BusStationAddResponse {
     String phoneAdd;
 
     int statusAdd;
-
 }

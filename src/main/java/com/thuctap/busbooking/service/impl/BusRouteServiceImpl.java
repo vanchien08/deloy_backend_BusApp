@@ -1,24 +1,25 @@
 package com.thuctap.busbooking.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import com.thuctap.busbooking.SpecificationQuery.FilterBusRoute;
 import com.thuctap.busbooking.dto.request.BusRouteRequest;
 import com.thuctap.busbooking.entity.*;
 import com.thuctap.busbooking.repository.BusRouteRepository;
 import com.thuctap.busbooking.repository.BusStationRepository;
-import com.thuctap.busbooking.repository.InvoiceRepository;
-import com.thuctap.busbooking.service.auth.RouteService;
-import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import com.thuctap.busbooking.SpecificationQuery.FilterBusRoute;
 import com.thuctap.busbooking.service.auth.BusRouteService;
+import com.thuctap.busbooking.service.auth.RouteService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,17 +38,19 @@ public class BusRouteServiceImpl implements BusRouteService {
 
     @Override
     public BusRoute updateBusRoute(int id, BusRouteRequest request) {
-        BusRoute existingRoute = busRouteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến xe"));
+        BusRoute existingRoute =
+                busRouteRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến xe"));
 
         if (request.getBusStationFromId() != null) {
-            BusStation fromStation = busStationRepository.findById(request.getBusStationFromId())
+            BusStation fromStation = busStationRepository
+                    .findById(request.getBusStationFromId())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy bến đi"));
             existingRoute.setBusStationFrom(fromStation);
         }
 
         if (request.getBusStationToId() != null) {
-            BusStation toStation = busStationRepository.findById(request.getBusStationToId())
+            BusStation toStation = busStationRepository
+                    .findById(request.getBusStationToId())
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy bến đến"));
             existingRoute.setBusStationTo(toStation);
         }
@@ -66,8 +69,8 @@ public class BusRouteServiceImpl implements BusRouteService {
     @Override
     @Transactional
     public void deleteBusRoute(int id) {
-        BusRoute busRoute = busRouteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến xe"));
+        BusRoute busRoute =
+                busRouteRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến xe"));
 
         busRoute.setStatus(0);
         busRouteRepository.save(busRoute);
@@ -76,8 +79,8 @@ public class BusRouteServiceImpl implements BusRouteService {
     @Override
     @Transactional
     public void restoreBusRoute(int id) {
-        BusRoute busRoute = busRouteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến xe"));
+        BusRoute busRoute =
+                busRouteRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến xe"));
 
         busRoute.setStatus(1);
         busRouteRepository.save(busRoute);
@@ -85,11 +88,15 @@ public class BusRouteServiceImpl implements BusRouteService {
 
     @Transactional
     public BusRoute addBusRoute(BusRouteRequest request) {
-        BusStation from = busStationRepository.findById(request.getBusStationFromId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy bến đi với ID: " + request.getBusStationFromId()));
+        BusStation from = busStationRepository
+                .findById(request.getBusStationFromId())
+                .orElseThrow(
+                        () -> new RuntimeException("Không tìm thấy bến đi với ID: " + request.getBusStationFromId()));
 
-        BusStation to = busStationRepository.findById(request.getBusStationToId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy bến đến với ID: " + request.getBusStationToId()));
+        BusStation to = busStationRepository
+                .findById(request.getBusStationToId())
+                .orElseThrow(
+                        () -> new RuntimeException("Không tìm thấy bến đến với ID: " + request.getBusStationToId()));
         BusRoute route = BusRoute.builder()
                 .busStationFrom(from)
                 .busStationTo(to)
@@ -99,15 +106,16 @@ public class BusRouteServiceImpl implements BusRouteService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
-        routeService.addRoute(route,from,1,1);
+        routeService.addRoute(route, from, 1, 1);
         int k = 2;
-        for(int i : request.getListRoute()){
-            BusStation busStation = busStationRepository.findById(i)
+        for (int i : request.getListRoute()) {
+            BusStation busStation = busStationRepository
+                    .findById(i)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy bến đến với ID: " + i));
-            routeService.addRoute(route,busStation,k,1);
+            routeService.addRoute(route, busStation, k, 1);
             ++k;
         }
-        routeService.addRoute(route,to,k,1);
+        routeService.addRoute(route, to, k, 1);
         return busRouteRepository.save(route);
     }
 
@@ -115,5 +123,4 @@ public class BusRouteServiceImpl implements BusRouteService {
         Specification<BusRoute> spec = FilterBusRoute.filterBusRoutes(from, to, distance, travelTime, status);
         return busRouteRepository.findAll(spec);
     }
-
 }

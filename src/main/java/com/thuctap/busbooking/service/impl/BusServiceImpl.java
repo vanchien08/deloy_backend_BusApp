@@ -1,26 +1,26 @@
 package com.thuctap.busbooking.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
 import com.thuctap.busbooking.SpecificationQuery.FilterBus;
 import com.thuctap.busbooking.dto.request.BusFilterRequest;
 import com.thuctap.busbooking.dto.request.BusRequest;
-import com.thuctap.busbooking.dto.request.BusTripFilterRequest;
 import com.thuctap.busbooking.entity.*;
 import com.thuctap.busbooking.repository.BusRepository;
-import com.thuctap.busbooking.repository.BusStationRepository;
 import com.thuctap.busbooking.repository.BusTypeRepository;
 import com.thuctap.busbooking.repository.SeatPositionRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 import com.thuctap.busbooking.service.auth.BusService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +31,7 @@ public class BusServiceImpl implements BusService {
     SeatPositionRepository seatPositionRepo;
     BusRepository busRepo;
     BusTypeRepository busTypeRepo;
+
     public List<Bus> getAllBus() {
         return busRepo.findAll();
     }
@@ -38,8 +39,6 @@ public class BusServiceImpl implements BusService {
     public List<BusType> getAllBusType() {
         return busTypeRepo.findAll();
     }
-
-
 
     @Transactional(rollbackOn = {Exception.class})
     public Bus addBus(BusRequest busRequest) {
@@ -49,8 +48,10 @@ public class BusServiceImpl implements BusService {
         }
 
         // Tìm loại xe
-        BusType busType = busTypeRepo.findById(busRequest.getBusTypeIdAdd())
-                .orElseThrow(() -> new RuntimeException("Loại xe không tồn tại với id: " + busRequest.getBusTypeIdAdd()));
+        BusType busType = busTypeRepo
+                .findById(busRequest.getBusTypeIdAdd())
+                .orElseThrow(
+                        () -> new RuntimeException("Loại xe không tồn tại với id: " + busRequest.getBusTypeIdAdd()));
 
         // Kiểm tra seatCount hợp lệ
         int seatCount = busType.getSeatCount();
@@ -85,7 +86,8 @@ public class BusServiceImpl implements BusService {
                 seatPositionRepo.save(seatPositionA);
                 log.info("Lưu ghế {} cho xe idBus = {} thành công", seatA, savedBus.getId());
             } catch (Exception e) {
-                throw new RuntimeException("Lỗi khi lưu ghế " + seatA + " cho xe idBus = " + savedBus.getId() + ": " + e.getMessage());
+                throw new RuntimeException(
+                        "Lỗi khi lưu ghế " + seatA + " cho xe idBus = " + savedBus.getId() + ": " + e.getMessage());
             }
 
             // Tạo ghế B (B01-BXX)
@@ -101,7 +103,8 @@ public class BusServiceImpl implements BusService {
                 seatPositionRepo.save(seatPositionB);
                 log.info("Lưu ghế {} cho xe idBus = {} thành công", seatB, savedBus.getId());
             } catch (Exception e) {
-                throw new RuntimeException("Lỗi khi lưu ghế " + seatB + " cho xe idBus = " + savedBus.getId() + ": " + e.getMessage());
+                throw new RuntimeException(
+                        "Lỗi khi lưu ghế " + seatB + " cho xe idBus = " + savedBus.getId() + ": " + e.getMessage());
             }
         }
 
@@ -118,8 +121,6 @@ public class BusServiceImpl implements BusService {
             throw new RuntimeException("Loại xe không tồn tại");
         }
 
-
-
         Bus bus = existingBus.get();
         bus.setName(busRequest.getNameAdd());
         bus.setBusType(busType.get());
@@ -127,12 +128,9 @@ public class BusServiceImpl implements BusService {
         return busRepo.save(bus);
     }
 
-
     public Bus updateBusStatus(int id, int status) {
 
-        Bus bus = busRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bus not found with id: " + id));
-
+        Bus bus = busRepo.findById(id).orElseThrow(() -> new RuntimeException("Bus not found with id: " + id));
 
         bus.setStatus(status);
         return busRepo.save(bus);
@@ -143,10 +141,6 @@ public class BusServiceImpl implements BusService {
                 filterRequest.getId(),
                 filterRequest.getNameAdd(),
                 filterRequest.getBusTypeIdAdd(),
-                filterRequest.getStatusAdd()
-        ));
+                filterRequest.getStatusAdd()));
     }
-
-
-
 }

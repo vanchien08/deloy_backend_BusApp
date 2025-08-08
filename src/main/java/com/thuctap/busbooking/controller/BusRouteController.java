@@ -1,21 +1,19 @@
 package com.thuctap.busbooking.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.thuctap.busbooking.dto.request.BusRouteFilterRequest;
 import com.thuctap.busbooking.dto.request.BusRouteRequest;
 import com.thuctap.busbooking.dto.response.ApiResponse;
-import com.thuctap.busbooking.dto.response.BusStationUpdateResponse;
 import com.thuctap.busbooking.entity.BusRoute;
-import com.thuctap.busbooking.entity.Invoice;
 import com.thuctap.busbooking.service.impl.BusRouteServiceImpl;
-import com.thuctap.busbooking.service.impl.InvoiceServiceImpl;
-import org.springframework.web.bind.annotation.*;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,14 +70,11 @@ public class BusRouteController {
                 request.getTo(),
                 request.getDistance(),
                 request.getTravelTime(),
-                request.getStatus()
-        );
+                request.getStatus());
 
         return ApiResponse.<List<BusRoute>>builder()
                 .result(filteredRoutes)
                 .message("Lọc danh sách tuyến xe thành công")
                 .build();
     }
-
-
 }

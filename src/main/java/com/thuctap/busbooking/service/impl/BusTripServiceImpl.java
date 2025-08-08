@@ -1,26 +1,5 @@
 package com.thuctap.busbooking.service.impl;
 
-import com.thuctap.busbooking.dto.response.BusTripSearchResponse;
-import com.thuctap.busbooking.dto.response.CostSummaryResponse;
-import com.thuctap.busbooking.dto.response.PassengerTripInfoResponse;
-import com.thuctap.busbooking.entity.BusTrip;
-import com.thuctap.busbooking.entity.Invoice;
-import com.thuctap.busbooking.repository.BusTripRepository;
-import com.thuctap.busbooking.repository.InvoiceRepository;
-import com.thuctap.busbooking.SpecificationQuery.FilterBusTrip;
-import com.thuctap.busbooking.dto.request.BusTripFilterRequest;
-import com.thuctap.busbooking.dto.request.BusTripRequest;
-import com.thuctap.busbooking.entity.*;
-import com.thuctap.busbooking.repository.*;
-import org.springframework.stereotype.Service;
-
-import com.thuctap.busbooking.service.auth.BusTripService;
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -29,6 +8,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.thuctap.busbooking.SpecificationQuery.FilterBusTrip;
+import com.thuctap.busbooking.dto.request.BusTripFilterRequest;
+import com.thuctap.busbooking.dto.request.BusTripRequest;
+import com.thuctap.busbooking.dto.response.BusTripSearchResponse;
+import com.thuctap.busbooking.dto.response.PassengerTripInfoResponse;
+import com.thuctap.busbooking.entity.*;
+import com.thuctap.busbooking.entity.BusTrip;
+import com.thuctap.busbooking.entity.Invoice;
+import com.thuctap.busbooking.repository.*;
+import com.thuctap.busbooking.repository.BusTripRepository;
+import com.thuctap.busbooking.repository.InvoiceRepository;
+import com.thuctap.busbooking.service.auth.BusTripService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +44,6 @@ public class BusTripServiceImpl implements BusTripService {
     SeatPositionRepository seatPositionRepository;
     InvoiceRepository invoiceRepository;
 
-
     public List<BusTrip> getAllBusTrip() {
         return busTripRepo.findAll();
     }
@@ -59,8 +57,8 @@ public class BusTripServiceImpl implements BusTripService {
     }
 
     public Boolean updateBusTripStatus(Integer id, Integer status) {
-        BusTrip busTrip = busTripRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy bến xe với id: " + id));
+        BusTrip busTrip =
+                busTripRepo.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy bến xe với id: " + id));
 
         if (status != 0 && status != 1) {
             throw new IllegalArgumentException("Trạng thái phải là 0 hoặc 1");
@@ -72,14 +70,19 @@ public class BusTripServiceImpl implements BusTripService {
     }
 
     public BusTrip addBusTrip(BusTripRequest request) {
-        if (request.getBusRouteId() == null || request.getDepartureTime() == null ||
-                request.getCostOperating() == null || request.getCostIncurred() == null ||
-                request.getPrice() == null || request.getBusId() == null || request.getDriverId() == null) {
+        if (request.getBusRouteId() == null
+                || request.getDepartureTime() == null
+                || request.getCostOperating() == null
+                || request.getCostIncurred() == null
+                || request.getPrice() == null
+                || request.getBusId() == null
+                || request.getDriverId() == null) {
             throw new IllegalArgumentException("Vui lòng điền đầy đủ các trường bắt buộc");
         }
 
         // Tìm các thực thể liên quan
-        BusRoute busRoute = busRouteRepo.findById(request.getBusRouteId())
+        BusRoute busRoute = busRouteRepo
+                .findById(request.getBusRouteId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến xe với id: " + request.getBusRouteId()));
         Bus bus = busRepo.findById(request.getBusId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy xe với id: " + request.getBusId()));
@@ -87,7 +90,6 @@ public class BusTripServiceImpl implements BusTripService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tài xế với id: " + request.getDriverId()));
 
         // Kiểm tra và tạo ghế cho xe nếu chưa tồn tại
-
 
         // Tạo mới BusTrip
         BusTrip busTrip = BusTrip.builder()
@@ -106,21 +108,26 @@ public class BusTripServiceImpl implements BusTripService {
         return busTripRepo.save(busTrip);
     }
 
-
     public BusTrip updateBusTrip(Integer id, BusTripRequest request) {
         // Tìm chuyến xe cần cập nhật
-        BusTrip busTrip = busTripRepo.findById(id)
+        BusTrip busTrip = busTripRepo
+                .findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến xe với id: " + id));
 
         // Kiểm tra các trường bắt buộc
-        if (request.getBusRouteId() == null || request.getDepartureTime() == null ||
-                request.getCostOperating() == null || request.getCostIncurred() == null ||
-                request.getPrice() == null || request.getBusId() == null || request.getDriverId() == null) {
+        if (request.getBusRouteId() == null
+                || request.getDepartureTime() == null
+                || request.getCostOperating() == null
+                || request.getCostIncurred() == null
+                || request.getPrice() == null
+                || request.getBusId() == null
+                || request.getDriverId() == null) {
             throw new IllegalArgumentException("Vui lòng điền đầy đủ các trường bắt buộc");
         }
 
         // Tìm các thực thể liên quan
-        BusRoute busRoute = busRouteRepo.findById(request.getBusRouteId())
+        BusRoute busRoute = busRouteRepo
+                .findById(request.getBusRouteId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến xe với id: " + request.getBusRouteId()));
         Bus bus = busRepo.findById(request.getBusId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy xe với id: " + request.getBusId()));
@@ -148,13 +155,13 @@ public class BusTripServiceImpl implements BusTripService {
                 request.getDepartureTime(),
                 request.getBusId(),
                 request.getDriverId(),
-                request.getStatus()
-        ));
+                request.getStatus()));
     }
 
     @Override
     public List<PassengerTripInfoResponse> getPassengerTripInfoByTripId(Integer tripId) {
-        BusTrip busTrip = busTripRepo.findById(tripId)
+        BusTrip busTrip = busTripRepo
+                .findById(tripId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến xe với id: " + tripId));
 
         Integer busId = busTrip.getBus().getId();
@@ -178,9 +185,7 @@ public class BusTripServiceImpl implements BusTripService {
                     .toList();
         }
 
-        List<Integer> invoiceIds = invoices.stream()
-                .map(Invoice::getId)
-                .toList();
+        List<Integer> invoiceIds = invoices.stream().map(Invoice::getId).toList();
 
         List<Ticket> tickets = ticketRepository.findByInvoiceIdIn(invoiceIds);
 
@@ -205,27 +210,31 @@ public class BusTripServiceImpl implements BusTripService {
     }
 
     public List<BusTripSearchResponse> getBusTrip(int startStationId, int endStationId, LocalDate date, int count) {
-        LocalDateTime currentTimePlusTwoHours = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).plusHours(2);
-        List<BusTrip> list = busTripRepo.findTripsWithIntermediateStops(startStationId, endStationId,date,currentTimePlusTwoHours);
+        LocalDateTime currentTimePlusTwoHours =
+                LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).plusHours(2);
+        List<BusTrip> list =
+                busTripRepo.findTripsWithIntermediateStops(startStationId, endStationId, date, currentTimePlusTwoHours);
         List<BusTripSearchResponse> responseList = new ArrayList<>();
-        for(BusTrip busTrip : list){
+        for (BusTrip busTrip : list) {
             int countA = 0;
             int countB = 0;
             List<SeatPosition> busTripList = new ArrayList<SeatPosition>();
-            List<SeatPosition> seatPositionList = seatPositionRepository.findByBusId(busTrip.getBus().getId());
-            for(SeatPosition seatPosition : seatPositionList){
-                if(ticketRepository.existsBySeatPositionIdAndBusTripId(seatPosition.getId(),busTrip.getId())){
-                    Ticket ticket = ticketRepository.findBySeatPositionIdAndBusTripId(seatPosition.getId(),busTrip.getId());
-                    if(ticket.getStatus()==0 || ticket.getStatus()==4 ) busTripList.add(seatPosition);
-                }else busTripList.add(seatPosition);
+            List<SeatPosition> seatPositionList =
+                    seatPositionRepository.findByBusId(busTrip.getBus().getId());
+            for (SeatPosition seatPosition : seatPositionList) {
+                if (ticketRepository.existsBySeatPositionIdAndBusTripId(seatPosition.getId(), busTrip.getId())) {
+                    Ticket ticket =
+                            ticketRepository.findBySeatPositionIdAndBusTripId(seatPosition.getId(), busTrip.getId());
+                    if (ticket.getStatus() == 0 || ticket.getStatus() == 4) busTripList.add(seatPosition);
+                } else busTripList.add(seatPosition);
             }
-            if(busTripList!=null){
-                for(SeatPosition position:busTripList){
-                    if(position.getName().contains("A")) countA++;
+            if (busTripList != null) {
+                for (SeatPosition position : busTripList) {
+                    if (position.getName().contains("A")) countA++;
                     else countB++;
                 }
             }
-            if((countA+countB)<count) continue;
+            if ((countA + countB) < count) continue;
             BusTripSearchResponse busTripSearchResponse = BusTripSearchResponse.builder()
                     .id(busTrip.getId())
                     .bus(busTrip.getBus())
@@ -235,7 +244,7 @@ public class BusTripServiceImpl implements BusTripService {
                     .costOperating(busTrip.getCostOperating())
                     .status(busTrip.getStatus())
                     .price(busTrip.getPrice())
-                    .count(countA+countB)
+                    .count(countA + countB)
                     .countA(countA)
                     .countB(countB)
                     .build();
@@ -243,6 +252,4 @@ public class BusTripServiceImpl implements BusTripService {
         }
         return responseList;
     }
-
-
 }

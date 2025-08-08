@@ -1,12 +1,13 @@
 package com.thuctap.busbooking.dto.response;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thuctap.busbooking.entity.Bus;
 import com.thuctap.busbooking.entity.BusRoute;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -18,7 +19,7 @@ public class BusTripSearchResponse {
     int id;
     BusRoute busRoute;
     LocalDateTime departureTime;
-    float costOperating ;
+    float costOperating;
     float costIncurred;
     int price;
     int status;

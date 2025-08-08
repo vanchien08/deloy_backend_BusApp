@@ -1,5 +1,11 @@
 package com.thuctap.busbooking.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
 import com.thuctap.busbooking.SpecificationQuery.FilterBusStation;
 import com.thuctap.busbooking.dto.response.BusStationAddResponse;
 import com.thuctap.busbooking.dto.response.BusStationUpdateResponse;
@@ -7,18 +13,12 @@ import com.thuctap.busbooking.entity.BusStation;
 import com.thuctap.busbooking.entity.Province;
 import com.thuctap.busbooking.repository.BusStationRepository;
 import com.thuctap.busbooking.repository.ProvinceRepository;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
 import com.thuctap.busbooking.service.auth.BusStationService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +28,10 @@ public class BusStationServiceImpl implements BusStationService {
 
     BusStationRepository BusSTTRepo;
     ProvinceRepository ProvinceRepo;
+
     public List<BusStation> getAllBusSTT() {
         return BusSTTRepo.findAll();
     }
-
 
     public Boolean updateBusStation(BusStationUpdateResponse request) {
         boolean result = false;
@@ -68,14 +68,16 @@ public class BusStationServiceImpl implements BusStationService {
         return BusSTTRepo.save(busStation);
     }
 
-
-    public List<BusStation> filterBusStations(Integer id, String name, String address, String phone, Integer provinceId, Integer status) {
-        Specification<BusStation> spec = FilterBusStation.filterBusStation(id, name, address, phone, provinceId, status);
+    public List<BusStation> filterBusStations(
+            Integer id, String name, String address, String phone, Integer provinceId, Integer status) {
+        Specification<BusStation> spec =
+                FilterBusStation.filterBusStation(id, name, address, phone, provinceId, status);
         return BusSTTRepo.findAll(spec);
     }
+
     public Boolean updateBusStationStatus(Integer id, Integer status) {
-        BusStation busStation = BusSTTRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy bến xe với id: " + id));
+        BusStation busStation =
+                BusSTTRepo.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy bến xe với id: " + id));
 
         if (status != 0 && status != 1) {
             throw new IllegalArgumentException("Trạng thái phải là 0 hoặc 1");

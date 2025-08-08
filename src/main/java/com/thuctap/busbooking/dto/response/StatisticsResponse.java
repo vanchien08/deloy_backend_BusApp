@@ -1,6 +1,5 @@
 package com.thuctap.busbooking.dto.response;
 
-import com.thuctap.busbooking.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

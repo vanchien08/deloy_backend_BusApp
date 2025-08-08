@@ -1,19 +1,18 @@
 package com.thuctap.busbooking.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.thuctap.busbooking.dto.request.ProvinceRequest;
 import com.thuctap.busbooking.dto.response.ApiResponse;
-import com.thuctap.busbooking.entity.BusTrip;
 import com.thuctap.busbooking.entity.Province;
-import com.thuctap.busbooking.service.impl.BusTripServiceImpl;
 import com.thuctap.busbooking.service.impl.ProvinceServiceImpl;
-import org.springframework.web.bind.annotation.*;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,8 +37,6 @@ public class ProvinceController {
                 .message("Lấy danh sách thành phố")
                 .build();
     }
-
-
 
     @PostMapping("/add-province")
     public ApiResponse<ProvinceRequest> addProvince(@RequestBody ProvinceRequest dto) {
@@ -68,8 +65,7 @@ public class ProvinceController {
     }
 
     @PutMapping("update-province/{id}")
-    public ApiResponse<ProvinceRequest> updateProvince(
-            @PathVariable int id, @RequestBody ProvinceRequest dto) {
+    public ApiResponse<ProvinceRequest> updateProvince(@PathVariable int id, @RequestBody ProvinceRequest dto) {
         try {
             ProvinceRequest updatedProvince = provinceService.updateProvince(id, dto);
             return ApiResponse.<ProvinceRequest>builder()
@@ -95,8 +91,7 @@ public class ProvinceController {
     }
 
     @PutMapping("update-province-status/{id}")
-    public ApiResponse<Void> updateProvinceStatus(
-            @PathVariable int id, @RequestParam int status) {
+    public ApiResponse<Void> updateProvinceStatus(@PathVariable int id, @RequestParam int status) {
         try {
             provinceService.updateProvinceStatus(id, status);
             return ApiResponse.<Void>builder()

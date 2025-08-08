@@ -18,16 +18,15 @@ public enum ErrorCode {
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     ROLE_EXISTED(1009, "Role already existed", HttpStatus.BAD_REQUEST),
     LIST_ROLE_NULL(1010, "List role null", HttpStatus.BAD_REQUEST),
-    USER_NOT_FOUND(1011,"User not found!",HttpStatus.BAD_REQUEST),
-    ACCOUNT_EXIST(1012,"Account already exists!",HttpStatus.BAD_REQUEST),
-    INVALID_OTP(1013,"Invalid OTP code",HttpStatus.BAD_REQUEST),
-    UPLOAD_FAILED(1014,"Image upload failed",HttpStatus.BAD_REQUEST),
-    PHONE_EXIST(1012,"Phone already exists!",HttpStatus.BAD_REQUEST),
-    CCCD_EXIST(1012,"CCCD already exists!",HttpStatus.BAD_REQUEST),
-    EMAIL_EXIST(1012,"Email already exists!",HttpStatus.BAD_REQUEST),
-    PHOTO_UPLOAD_FAILED(1012,"Photo upload failed!",HttpStatus.BAD_REQUEST),
-    TICKET_LIST_FAILED(1018,"Error when getting bus ticket list!",HttpStatus.BAD_REQUEST),
-
+    USER_NOT_FOUND(1011, "User not found!", HttpStatus.BAD_REQUEST),
+    ACCOUNT_EXIST(1012, "Account already exists!", HttpStatus.BAD_REQUEST),
+    INVALID_OTP(1013, "Invalid OTP code", HttpStatus.BAD_REQUEST),
+    UPLOAD_FAILED(1014, "Image upload failed", HttpStatus.BAD_REQUEST),
+    PHONE_EXIST(1012, "Phone already exists!", HttpStatus.BAD_REQUEST),
+    CCCD_EXIST(1012, "CCCD already exists!", HttpStatus.BAD_REQUEST),
+    EMAIL_EXIST(1012, "Email already exists!", HttpStatus.BAD_REQUEST),
+    PHOTO_UPLOAD_FAILED(1012, "Photo upload failed!", HttpStatus.BAD_REQUEST),
+    TICKET_LIST_FAILED(1018, "Error when getting bus ticket list!", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

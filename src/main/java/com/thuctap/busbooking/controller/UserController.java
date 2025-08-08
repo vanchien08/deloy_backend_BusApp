@@ -1,27 +1,25 @@
 package com.thuctap.busbooking.controller;
 
+import java.io.IOException;
+import java.util.List;
+
+import jakarta.servlet.annotation.MultipartConfig;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
 import com.thuctap.busbooking.dto.request.*;
 import com.thuctap.busbooking.dto.response.ApiResponse;
 import com.thuctap.busbooking.dto.response.UserCreationResponse;
 import com.thuctap.busbooking.dto.response.UserInfoResponse;
-import com.thuctap.busbooking.entity.Account;
 import com.thuctap.busbooking.entity.User;
-import com.thuctap.busbooking.service.auth.UserService;
 import com.thuctap.busbooking.service.impl.CloudinaryService;
 import com.thuctap.busbooking.service.impl.UserServiceImpl;
-import jakarta.servlet.annotation.MultipartConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +30,7 @@ public class UserController {
 
     UserServiceImpl userService;
     CloudinaryService cloudinaryService;
+
     @GetMapping("/list-user")
     ApiResponse<List<User>> getAllUsers() {
         return ApiResponse.<List<User>>builder()
@@ -89,8 +88,7 @@ public class UserController {
                 request.getPhone(),
                 request.getEmail(),
                 request.getStatus(),
-                request.getRoleId()
-        );
+                request.getRoleId());
 
         return ApiResponse.<List<User>>builder()
                 .result(filteredUsers)
@@ -99,11 +97,10 @@ public class UserController {
     }
 
     @PostMapping("/complete-registration")
-    ApiResponse<UserCreationResponse> createUser(@RequestBody UserCreationRequest request){
+    ApiResponse<UserCreationResponse> createUser(@RequestBody UserCreationRequest request) {
         User user = userService.createUserLogin(request);
-        UserCreationResponse userCreationResponse = UserCreationResponse.builder()
-                .name(user.getName())
-                .build();
+        UserCreationResponse userCreationResponse =
+                UserCreationResponse.builder().name(user.getName()).build();
         return ApiResponse.<UserCreationResponse>builder()
                 .code(200)
                 .message("Account created successfully")
@@ -112,11 +109,10 @@ public class UserController {
     }
 
     @PostMapping("/create-user")
-    ApiResponse<UserCreationResponse> createUser1(@RequestBody UserCreationRequest request){
+    ApiResponse<UserCreationResponse> createUser1(@RequestBody UserCreationRequest request) {
         User user = userService.createUserLogin(request);
-        UserCreationResponse userCreationResponse = UserCreationResponse.builder()
-                .name(user.getName())
-                .build();
+        UserCreationResponse userCreationResponse =
+                UserCreationResponse.builder().name(user.getName()).build();
         return ApiResponse.<UserCreationResponse>builder()
                 .code(200)
                 .message("Account created successfully")
@@ -124,12 +120,11 @@ public class UserController {
                 .build();
     }
 
-    @PostMapping(value = "/create-driver" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ApiResponse<UserCreationResponse> createDriver(@ModelAttribute  DriverCreationRequest request){
+    @PostMapping(value = "/create-driver", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ApiResponse<UserCreationResponse> createDriver(@ModelAttribute DriverCreationRequest request) {
         User user = userService.createDriver(request);
-        UserCreationResponse userCreationResponse = UserCreationResponse.builder()
-                .name("12")
-                .build();
+        UserCreationResponse userCreationResponse =
+                UserCreationResponse.builder().name("12").build();
         return ApiResponse.<UserCreationResponse>builder()
                 .code(200)
                 .message("Account created successfully")
@@ -138,7 +133,7 @@ public class UserController {
     }
 
     @PostMapping("/create-photo")
-    ApiResponse createDriver1(@ModelAttribute Image request){
+    ApiResponse createDriver1(@ModelAttribute Image request) {
         System.out.println(">>> File nhận được: " + request.getFile().getOriginalFilename());
         try {
             cloudinaryService.uploadFile(request.getFile());
@@ -152,14 +147,15 @@ public class UserController {
     }
 
     @GetMapping("/myinfo")
-    ApiResponse<User> getMyInfo(){
+    ApiResponse<User> getMyInfo() {
         return ApiResponse.<User>builder()
                 .result(userService.getMyInfo())
                 .message("Account get account success !")
                 .build();
     }
+
     @GetMapping("/myinfouser")
-    ApiResponse<UserInfoResponse> getMyInfoUser(){
+    ApiResponse<UserInfoResponse> getMyInfoUser() {
         User user = userService.getMyInfo();
         UserInfoResponse userInfoResponse = UserInfoResponse.builder()
                 .id(user.getId())
@@ -178,7 +174,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/update-user-info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ApiResponse<UserInfoResponse> updateMyInfoUser(@ModelAttribute  UserUpdateInfoRequest request){
+    ApiResponse<UserInfoResponse> updateMyInfoUser(@ModelAttribute UserUpdateInfoRequest request) {
         User user = userService.updateUserInfo(request);
         UserInfoResponse userInfoResponse = UserInfoResponse.builder()
                 .name(user.getName())

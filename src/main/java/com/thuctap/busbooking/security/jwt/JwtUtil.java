@@ -1,11 +1,11 @@
 package com.thuctap.busbooking.security.jwt;
 
-import org.springframework.stereotype.Component;
-import io.jsonwebtoken.*;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import io.jsonwebtoken.*;
 
 @Component
 public class JwtUtil {
@@ -27,11 +27,19 @@ public class JwtUtil {
     }
 
     public String getEmailFromToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public String getRoleFromToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("role", String.class);
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
     }
 
     public boolean validateToken(String token) {

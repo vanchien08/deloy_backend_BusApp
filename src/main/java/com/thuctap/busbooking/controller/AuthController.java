@@ -1,21 +1,21 @@
 package com.thuctap.busbooking.controller;
 
+import org.springframework.web.bind.annotation.*;
+
 import com.thuctap.busbooking.dto.request.AccountCreationRequest;
 import com.thuctap.busbooking.dto.request.LoginRequest;
 import com.thuctap.busbooking.dto.request.RegisterRequest;
 import com.thuctap.busbooking.dto.request.VerifyRequest;
 import com.thuctap.busbooking.dto.response.ApiResponse;
 import com.thuctap.busbooking.dto.response.JwtResponse;
-import com.thuctap.busbooking.entity.Account;
 import com.thuctap.busbooking.exception.ErrorCode;
 import com.thuctap.busbooking.service.auth.AuthService;
 import com.thuctap.busbooking.service.impl.AccountServiceImpl;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +32,7 @@ public class AuthController {
                 .result(authService.login(loginRequest))
                 .build();
     }
+
     @PostMapping("/register")
     public ApiResponse<?> register(@RequestBody RegisterRequest request) {
         String result = accountService.sendVerificationEmail(request.getEmail());

@@ -1,18 +1,20 @@
 package com.thuctap.busbooking.service.impl;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.thuctap.busbooking.entity.BusTrip;
 import com.thuctap.busbooking.entity.Invoice;
 import com.thuctap.busbooking.entity.SeatPosition;
 import com.thuctap.busbooking.entity.Ticket;
 import com.thuctap.busbooking.repository.TicketRepository;
-import org.springframework.stereotype.Service;
 import com.thuctap.busbooking.service.auth.TicketService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,15 +43,9 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.save(ticket);
     }
 
-
-
     public List<Ticket> getTicketByUserId(int id) {
         List<Ticket> tickets = ticketRepository.findTicketsByUserId(id);
 
-
-       return tickets;
-
+        return tickets;
     }
-
-
 }

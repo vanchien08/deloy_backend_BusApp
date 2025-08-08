@@ -1,5 +1,19 @@
 package com.thuctap.busbooking.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.thuctap.busbooking.dto.request.AccountCreationRequest;
 import com.thuctap.busbooking.dto.request.PasswordResetRequest;
 import com.thuctap.busbooking.entity.Account;
@@ -12,22 +26,11 @@ import com.thuctap.busbooking.repository.AccountRepository;
 import com.thuctap.busbooking.repository.OtpRepository;
 import com.thuctap.busbooking.repository.RoleRepository;
 import com.thuctap.busbooking.service.auth.AccountService;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -49,10 +52,9 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAll();
     }
 
-    public Account createAccountUser(AccountCreationRequest request){
-        if(accountRepository.existsByEmail(request.getEmail()))
-            throw new AppException(ErrorCode.ACCOUNT_EXIST);
-        Account account =accountMapper.toAccount(request);
+    public Account createAccountUser(AccountCreationRequest request) {
+        if (accountRepository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.ACCOUNT_EXIST);
+        Account account = accountMapper.toAccount(request);
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         account.setStatus(1);
         Role role = roleRepository.findByName("USER");
@@ -60,11 +62,13 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(account);
     }
 
-    public boolean resetPass(PasswordResetRequest request){
+    public boolean resetPass(PasswordResetRequest request) {
         var context = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountRepository.findByEmail(String.valueOf(context)).orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
+        Account account = accountRepository
+                .findByEmail(String.valueOf(context))
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         System.out.println(account.getPassword().equals(request.getCurrentPassword()));
-        if(passwordEncoder.matches(request.getCurrentPassword(), account.getPassword())){
+        if (passwordEncoder.matches(request.getCurrentPassword(), account.getPassword())) {
             account.setPassword(passwordEncoder.encode(request.getNewPassword()));
             accountRepository.save(account);
             return true;
@@ -72,10 +76,9 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
-    public Account createAccountDriver(AccountCreationRequest request){
-        if(accountRepository.existsByEmail(request.getEmail()))
-            throw new AppException(ErrorCode.ACCOUNT_EXIST);
-        Account account =accountMapper.toAccount(request);
+    public Account createAccountDriver(AccountCreationRequest request) {
+        if (accountRepository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.ACCOUNT_EXIST);
+        Account account = accountMapper.toAccount(request);
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         account.setStatus(1);
         Role role = roleRepository.findByName("DRIVER");
@@ -84,10 +87,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public String sendVerificationEmail(String email) {
-        if (accountRepository.existsByEmail(email))
-            throw new AppException(ErrorCode.EMAIL_EXIST);
-        if(otpRepository.existsByEmail(email))
-            throw new AppException(ErrorCode.EMAIL_EXIST);
+        if (accountRepository.existsByEmail(email)) throw new AppException(ErrorCode.EMAIL_EXIST);
+        if (otpRepository.existsByEmail(email)) throw new AppException(ErrorCode.EMAIL_EXIST);
         String code = generateVerificationCode();
         Otp otp = Otp.builder()
                 .email(email)
@@ -131,7 +132,8 @@ public class AccountServiceImpl implements AccountService {
                     + "<body>"
                     + "<div class=\"container\">"
                     + "<div class=\"header\">"
-//                    + "<img src='https://via.placeholder.com/150' alt='BusBooking Logo' style='display:block;'>"
+                    //                    + "<img src='https://via.placeholder.com/150' alt='BusBooking Logo'
+                    // style='display:block;'>"
                     + "<h2>Xác Thực Email Của Bạn</h2>"
                     + "</div>"
                     + "<div class=\"content\">"
@@ -156,8 +158,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public boolean verifyEmail(String email, String code) {
-        log.info(email+code);
-        return otpRepository.findByEmail(email)
+        log.info(email + code);
+        return otpRepository
+                .findByEmail(email)
                 .filter(otp -> otp.getExpiresAt().isAfter(LocalDateTime.now()))
                 .map(otp -> {
                     if (otp.getOtp().equals(code)) {

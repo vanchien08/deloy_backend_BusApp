@@ -1,14 +1,16 @@
 package com.thuctap.busbooking.SpecificationQuery;
 
-import com.thuctap.busbooking.entity.Bus;
-import com.thuctap.busbooking.entity.BusType;
-import org.springframework.data.jpa.domain.Specification;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.thuctap.busbooking.entity.Bus;
+import com.thuctap.busbooking.entity.BusType;
 
 public class FilterBus {
 
@@ -25,8 +27,7 @@ public class FilterBus {
             if (name != null && !name.trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("name")),
-                        "%" + name.trim().toLowerCase() + "%"
-                ));
+                        "%" + name.trim().toLowerCase() + "%"));
             }
 
             // Lọc theo loại xe (busTypeId)

@@ -5,5 +5,4 @@ import com.thuctap.busbooking.entity.ChangeHistoryTicket;
 
 public interface ChangeHistoryTicketService {
     ChangeHistoryTicket createChangeTicket(ChangeTicketRequest request);
-
 }

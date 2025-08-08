@@ -1,17 +1,18 @@
 package com.thuctap.busbooking.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.thuctap.busbooking.dto.request.TimeRangeRequest;
 import com.thuctap.busbooking.dto.response.*;
 import com.thuctap.busbooking.repository.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,12 +33,7 @@ public class StatisticController {
         long totalBusTrip = busTripRepository.countByStatus(1);
         long totalBusStation = busStationRepository.countByStatus(1);
 
-        StatisticsResponse response = new StatisticsResponse(
-                totalBus,
-                totalBusRoute,
-                totalBusTrip,
-                totalBusStation
-        );
+        StatisticsResponse response = new StatisticsResponse(totalBus, totalBusRoute, totalBusTrip, totalBusStation);
 
         return ApiResponse.<StatisticsResponse>builder()
                 .result(response)
@@ -67,7 +63,8 @@ public class StatisticController {
     }
 
     @PostMapping("/dashboard/monthly-revenue")
-    public ApiResponse<List<MonthlyRevenueResponse>> getMonthlyRevenueStatistics(@RequestBody TimeRangeRequest request) {
+    public ApiResponse<List<MonthlyRevenueResponse>> getMonthlyRevenueStatistics(
+            @RequestBody TimeRangeRequest request) {
         LocalDateTime from = request.getFromDate();
         LocalDateTime to = request.getToDate();
 

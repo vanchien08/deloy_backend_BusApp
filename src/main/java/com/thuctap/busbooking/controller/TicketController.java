@@ -1,17 +1,17 @@
 package com.thuctap.busbooking.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.thuctap.busbooking.dto.response.ApiResponse;
 import com.thuctap.busbooking.entity.Ticket;
-import com.thuctap.busbooking.exception.ErrorCode;
 import com.thuctap.busbooking.service.impl.TicketServiceImpl;
-import org.springframework.web.bind.annotation.*;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class TicketController {
     }
 
     @GetMapping("/list-ticket/{id}")
-    ApiResponse<List<Ticket>> getListTicketID(@PathVariable Integer id){
+    ApiResponse<List<Ticket>> getListTicketID(@PathVariable Integer id) {
         return ApiResponse.<List<Ticket>>builder()
                 .result(ticketService.getAllTicketsID(id))
                 .message("Lấy danh sách vé thành công")
